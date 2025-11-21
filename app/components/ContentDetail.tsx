@@ -2,10 +2,13 @@
 
 import { useState, useMemo } from 'react';
 import { IconChevronLeft, IconChevronRight, IconEye, IconShare, IconExternalLink, IconCheck } from '@tabler/icons-react';
-import { Item, Stage } from '../types';
+import { Item, Stage, Simulation, Workflow } from '../types';
 import { useItems } from '../context/ItemsContext';
 import styles from './ContentDetail.module.css';
+import dashboardStyles from './Dashboard.module.css';
 import ShareModal from './ShareModal';
+import ItemRow from './ItemRow';
+import EmptyState from './EmptyState';
 
 interface ContentDetailProps {
   item: Item;
@@ -17,15 +20,27 @@ export default function ContentDetail({ item, onBack }: ContentDetailProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Mock screen data - in real app this would come from the item
-  const screens = (item.type === 'workflow' || item.type === 'simulation') && 'screenCount' in item && item.screenCount > 0
+  // Get workflows for simulation
+  const simulationWorkflows = useMemo(() => {
+    if (item.type === 'simulation') {
+      const simulation = item as Simulation;
+      const workflowIds = simulation.selectedWorkflows || [];
+      return items.filter((i): i is Workflow => 
+        i.type === 'workflow' && workflowIds.includes(i.id)
+      );
+    }
+    return [];
+  }, [item, items]);
+
+  // Mock screen data - in real app this would come from the item (only for workflows)
+  const screens = item.type === 'workflow' && 'screenCount' in item && item.screenCount > 0
     ? Array.from({ length: item.screenCount }, (_, i) => ({
         id: `${item.id}-screen-${i + 1}`,
         title: `Capture ${i + 1}`,
         description: i === 0 ? 'Click on cta link' : i === 1 ? 'Google Store: Exclusive Google P...' : 'Click on Free open wiki software...',
         thumbnail: `https://picsum.photos/300/200?random=${i + 1}`,
       }))
-    : (item.type === 'workflow' || item.type === 'simulation')
+    : item.type === 'workflow'
     ? [
         { id: '1', title: 'Capture 1', description: 'Click on cta link', thumbnail: 'https://picsum.photos/300/200?random=1' },
         { id: '2', title: 'Capture 2', description: 'Google Store: Exclusive Google P...', thumbnail: 'https://picsum.photos/300/200?random=2' },
@@ -192,53 +207,98 @@ export default function ContentDetail({ item, onBack }: ContentDetailProps) {
         </div>
       </div>
 
-      {/* Screens Grid */}
-      <div className={styles.screensContainer}>
-        {screens.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>No screens added yet. Add screens to build your workflow.</p>
+      {/* Content based on type */}
+      {item.type === 'simulation' ? (
+        /* Workflows Table for Simulation */
+        <div className={styles.screensContainer}>
+          <div className={dashboardStyles.tableContainer}>
+            <table className={dashboardStyles.table}>
+              <thead className={dashboardStyles.tableHeader}>
+                <tr>
+                  <th className={dashboardStyles.tableHeaderCell}>
+                  </th>
+                  <th className={dashboardStyles.tableHeaderCell}>Name ↕</th>
+                  <th className={dashboardStyles.tableHeaderCell}>Type</th>
+                  <th className={dashboardStyles.tableHeaderCell}>Created by</th>
+                  <th className={dashboardStyles.tableHeaderCell}>Last updated ⇅</th>
+                  <th className={dashboardStyles.tableHeaderCell}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {simulationWorkflows.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} style={{ padding: 0 }}>
+                      <EmptyState
+                        type="empty"
+                        onCreateClick={undefined}
+                      />
+                    </td>
+                  </tr>
+                ) : (
+                  simulationWorkflows.map((workflow) => (
+                    <ItemRow
+                      key={workflow.id}
+                      item={workflow}
+                      isSelected={false}
+                      onSelect={() => {}}
+                      stage={item.stage}
+                      allItems={items}
+                    />
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        ) : (
-          <>
-            <div className={styles.screensGrid}>
-              {visibleScreens.map((screen, index) => {
-                const globalIndex = startIndex + index;
-                const isLastInAll = globalIndex === screens.length - 1;
-                return (
-                  <div key={screen.id} className={styles.screenCard}>
-                    <div className={styles.screenThumbnail}>
-                      <img src={screen.thumbnail} alt={screen.title} />
-                    </div>
-                    <div className={styles.screenInfo}>
-                      <h3 className={styles.screenTitle}>{screen.title}</h3>
-                      <p className={styles.screenDescription}>{screen.description}</p>
-                    </div>
-                    {!isLastInAll && (
-                      <div className={styles.connector}>
-                        <div className={styles.connectorLine}></div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+        </div>
+      ) : (
+        /* Screens Grid for Workflow */
+        <div className={styles.screensContainer}>
+          {screens.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No screens added yet. Add screens to build your workflow.</p>
             </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className={styles.pagination}>
-                <div className={styles.paginationInfo}>
-                  Screens {startIndex + 1}-{Math.min(startIndex + itemsPerPage, screens.length)} of {screens.length}
-                </div>
-                <div className={styles.paginationControls}>
-                  <button className={`${styles.paginationButton} ${styles.paginationButtonActive}`}>
-                    {currentPage}
-                  </button>
-                </div>
+          ) : (
+            <>
+              <div className={styles.screensGrid}>
+                {visibleScreens.map((screen, index) => {
+                  const globalIndex = startIndex + index;
+                  const isLastInAll = globalIndex === screens.length - 1;
+                  return (
+                    <div key={screen.id} className={styles.screenCard}>
+                      <div className={styles.screenThumbnail}>
+                        <img src={screen.thumbnail} alt={screen.title} />
+                      </div>
+                      <div className={styles.screenInfo}>
+                        <h3 className={styles.screenTitle}>{screen.title}</h3>
+                        <p className={styles.screenDescription}>{screen.description}</p>
+                      </div>
+                      {!isLastInAll && (
+                        <div className={styles.connector}>
+                          <div className={styles.connectorLine}></div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </>
-        )}
-      </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <div className={styles.paginationInfo}>
+                    Screens {startIndex + 1}-{Math.min(startIndex + itemsPerPage, screens.length)} of {screens.length}
+                  </div>
+                  <div className={styles.paginationControls}>
+                    <button className={`${styles.paginationButton} ${styles.paginationButtonActive}`}>
+                      {currentPage}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       <ShareModal
         isOpen={showShareModal}

@@ -496,7 +496,7 @@ export const mockData: Item[] = [
     workflowCount: 3,
     hasAssessment: false,
     playgroundMode: false,
-    selectedWorkflows: ['10001', '10002'],
+    selectedWorkflows: ['10001', '10002', '11001'],
   },
 
   // Inside Home Care Programs (3002)
