@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Whatfix Mirror - Prototype
+
+A working prototype for Whatfix Mirror's content organization system with nested folder support and streamlined workflow stages.
+
+## Key Features
+
+### 1. Streamlined Workflow Stages
+- **Draft**: Work in progress items
+- **Production**: Published items
+- **No "Ready" state**: Removed unnecessary intermediate stage
+
+### 2. Nested Folder Structure
+- Create unlimited nested folders
+- Organize workflows and simulations hierarchically
+- Breadcrumb navigation for easy traversal
+- Visual folder icons and navigation
+
+### 3. Content Types
+- **Workflows**: Individual workflow screens
+- **Simulations**: Collections of workflows
+- **Folders**: Organizational containers (can be nested infinitely)
+
+### 4. Features Implemented
+- ✅ Create new folders, workflows, and simulations
+- ✅ Nested folder navigation with breadcrumbs
+- ✅ Search functionality
+- ✅ Delete items with confirmation
+- ✅ Visual indicators (assessment badges, screen counts)
+- ✅ Responsive layout matching Whatfix design
+- ✅ Tabler icons throughout
+- ✅ Draft/Production tabs (no Ready state)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+ installed
+- npm or yarn package manager
 
-```bash
+### Installation
+
+1. Install dependencies:
+\`\`\`bash
+npm install
+\`\`\`
+
+2. Run the development server:
+\`\`\`bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Creating Content
 
-## Learn More
+1. **Create a Folder**:
+   - Click "Create new" button
+   - Select "Create folder"
+   - Enter folder name
+   - Folder appears in current location
 
-To learn more about Next.js, take a look at the following resources:
+2. **Create a Workflow**:
+   - Click "Create new" button
+   - Select "Create workflow"
+   - Enter workflow name
+   - Workflow is created in current folder
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Create a Simulation**:
+   - Click "Create new" button or "Create simulation" in header
+   - Select "Create simulation"
+   - Enter simulation name
+   - Simulation is created in current folder
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Navigating Folders
 
-## Deploy on Vercel
+1. **Enter a Folder**:
+   - Click on any folder row to navigate into it
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Navigate Back**:
+   - Use breadcrumb navigation at the top
+   - Click on any breadcrumb level to jump to that folder
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **View All Items**:
+   - Click "Workflows" or home icon in breadcrumbs to go to root
+
+### Managing Items
+
+- **Delete**: Click the three-dot menu (⋮) on any item and select "Delete"
+- **Search**: Use the search bar to filter items by name
+- **Switch Stages**: Toggle between "Draft" and "Production" tabs
+
+## Technology Stack
+
+- **Next.js 16**: React framework with App Router
+- **TypeScript**: Type-safe development
+- **Tailwind CSS 4**: Utility-first styling
+- **Tabler Icons**: Beautiful SVG icons
+- **React Context API**: State management
+
+## Project Structure
+
+\`\`\`
+mirror-org/
+├── app/
+│   ├── components/
+│   │   ├── Sidebar.tsx          # Navigation sidebar
+│   │   ├── WorkflowsTable.tsx   # Main table view
+│   │   ├── ItemRow.tsx          # Individual item row
+│   │   └── CreateItemModal.tsx  # Creation modal
+│   ├── context/
+│   │   └── ItemsContext.tsx     # Global state management
+│   ├── utils/
+│   │   └── mockData.ts          # Sample data
+│   ├── types.ts                 # TypeScript definitions
+│   ├── page.tsx                 # Main workflows page
+│   ├── analytics/page.tsx       # Analytics page
+│   ├── settings/page.tsx        # Settings page
+│   └── globals.css              # Global styles
+└── package.json
+\`\`\`
+
+## Design Decisions
+
+### Color Scheme
+- **Primary**: Blue (#3b82f6) - Actions and active states
+- **Secondary**: Orange (#ff6b35) - Branding and alerts
+- **Dark**: Gray (#2d3748) - Sidebar background
+- **Background**: Light gray (#f7fafc) - Page background
+
+### User Experience
+1. **Simplified States**: Removed "Ready" state to reduce complexity
+2. **Nested Folders**: Allow unlimited nesting for better organization
+3. **Visual Feedback**: Hover states, loading indicators, and confirmations
+4. **Breadcrumb Navigation**: Clear path indication and quick navigation
+
+## Testing with Users
+
+This prototype is ready for user testing. Key scenarios to test:
+
+1. **Folder Organization**:
+   - Can users create logical folder hierarchies?
+   - Is navigation intuitive with breadcrumbs?
+
+2. **Stage Management**:
+   - Does removing "Ready" state simplify the workflow?
+   - Is Draft → Production transition clear?
+
+3. **Content Creation**:
+   - Is the creation flow straightforward?
+   - Are item types clearly differentiated?
+
+4. **Search & Filter**:
+   - Can users quickly find items?
+   - Are visual indicators helpful?
+
+## Future Enhancements
+
+- Drag-and-drop for reorganizing items
+- Bulk operations (move, delete multiple items)
+- Advanced filtering options
+- Rename functionality
+- Move items between folders
+- Export/import capabilities
+- Collaboration features (sharing, comments)
+- Version history
+
+## License
+
+This is a prototype for internal testing at Whatfix.

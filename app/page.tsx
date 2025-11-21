@@ -1,65 +1,238 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import Sidebar from './components/Sidebar';
+import WorkflowsTable from './components/WorkflowsTable';
+import ContentDetail from './components/ContentDetail';
+import HelpButton from './components/HelpButton';
+import { ItemsProvider, useItems } from './context/ItemsContext';
+import { IconPlus, IconSearch, IconFilter, IconLayoutGrid, IconChevronRight } from '@tabler/icons-react';
+import { Stage, ItemType } from './types';
+import styles from './components/Dashboard.module.css';
+
+function ContentArea() {
+  const { selectedContent, setSelectedContent, breadcrumbs, setCurrentFolder } = useItems();
+  const [activeTab, setActiveTab] = useState<Stage>('draft');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateMenu, setShowCreateMenu] = useState(false);
+  const [createItemType, setCreateItemType] = useState<ItemType>('workflow');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const createMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (createMenuRef.current && !createMenuRef.current.contains(event.target as Node)) {
+        setShowCreateMenu(false);
+      }
+    };
+
+    if (showCreateMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCreateMenu]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (createMenuRef.current && !createMenuRef.current.contains(event.target as Node)) {
+        setShowCreateMenu(false);
+      }
+    };
+
+    if (showCreateMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCreateMenu]);
+
+  // If content is selected, show detail view
+  if (selectedContent && (selectedContent.type === 'workflow' || selectedContent.type === 'simulation')) {
+    return (
+      <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f7fafc' }}>
+        <Sidebar />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <ContentDetail 
+            item={selectedContent} 
+            onBack={() => setSelectedContent(null)} 
+          />
+        </div>
+        <HelpButton />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f7fafc' }}>
+      <Sidebar />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Breadcrumbs - Only show when inside folders */}
+        {breadcrumbs.length > 1 && (
+          <div className={styles.breadcrumbs}>
+            <div className={styles.breadcrumbContainer}>
+              {breadcrumbs.map((crumb, index) => (
+                <div key={crumb.id || 'root'} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {index > 0 && <IconChevronRight size={16} style={{ color: '#a0aec0' }} />}
+                  <button
+                    onClick={() => setCurrentFolder(crumb.id)}
+                    className={`${styles.breadcrumbItem} ${
+                      index === breadcrumbs.length - 1 ? styles.breadcrumbItemActive : ''
+                    }`}
+                  >
+                    {crumb.name}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className={styles.header}>
+          <h1 className={styles.title}>Content</h1>
+        </div>
+
+        {/* Tabs */}
+        <div className={styles.tabsContainer}>
+          <div className={styles.tabs}>
+            <button
+              onClick={() => {
+                setActiveTab('draft');
+                setCurrentFolder(null);
+                setSelectedContent(null);
+              }}
+              className={`${styles.tab} ${activeTab === 'draft' ? styles.tabActive : ''}`}
+            >
+              Draft
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('production');
+                setCurrentFolder(null);
+                setSelectedContent(null);
+              }}
+              className={`${styles.tab} ${activeTab === 'production' ? styles.tabActive : ''}`}
+            >
+              Production
+            </button>
+            
+            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div ref={createMenuRef} style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowCreateMenu(!showCreateMenu)}
+                  className={styles.createButton}
+                >
+                  <IconPlus size={18} />
+                  Create new
+                </button>
+                {showCreateMenu && (
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '100%',
+                    marginTop: '8px',
+                    width: '192px',
+                    backgroundColor: 'white',
+                    borderRadius: '6px',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    zIndex: 100,
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <button
+                      onClick={() => {
+                        setCreateItemType('folder');
+                        setIsCreateModalOpen(true);
+                        setShowCreateMenu(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        color: '#4a5568',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      Create folder
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCreateItemType('workflow');
+                        setIsCreateModalOpen(true);
+                        setShowCreateMenu(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        color: '#4a5568',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      Create content
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.searchContainer}>
+                <IconSearch size={20} className={styles.searchIcon} />
+                <input
+                  type="text"
+                  placeholder="Search by name"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={styles.searchInput}
+                />
+              </div>
+
+              <button className={styles.filterButton}>
+                <IconFilter size={18} />
+                Filter
+              </button>
+              <button className={styles.gridButton}>
+                <IconLayoutGrid size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <WorkflowsTable 
+          stage={activeTab} 
+          searchTerm={searchTerm}
+          createItemType={createItemType}
+          isCreateModalOpen={isCreateModalOpen}
+          onCloseCreateModal={() => setIsCreateModalOpen(false)}
+        />
+      </div>
+
+      {/* Help Button */}
+      <HelpButton />
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <ItemsProvider>
+      <ContentArea />
+    </ItemsProvider>
   );
 }

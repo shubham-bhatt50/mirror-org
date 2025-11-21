@@ -1,0 +1,527 @@
+.dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f7fafc;
+}
+
+.banner {
+  background-color: #ff6b35;
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.bannerLink {
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header {
+  background-color: white;
+  padding: 16px 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+}
+
+.tabsContainer {
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabs {
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.tab {
+  padding: 12px 8px;
+  border-bottom: 3px solid transparent;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: #4a5568;
+}
+
+.tabActive {
+  color: #3b82f6;
+  border-bottom: 3px solid #3b82f6;
+}
+
+.createSimulationButton {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.createSimulationButton:hover {
+  background-color: #eff6ff;
+}
+
+.selectionBar {
+  background-color: white;
+  padding: 12px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selectionBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selectedBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.deselectButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  transition: background-color 0.2s;
+}
+
+.deselectButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.publishButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.publishButton:hover {
+  background-color: #2563eb;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #fef2f2;
+  border-color: #b91c1c;
+}
+
+.breadcrumbs {
+  background-color: white;
+  padding: 8px 24px 4px 24px;
+}
+
+.breadcrumbContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #718096;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.breadcrumbItem:hover {
+  color: #3b82f6;
+}
+
+.breadcrumbItemActive {
+  color: #1a202c;
+  font-weight: 500;
+  cursor: default;
+}
+
+.breadcrumbItemActive:hover {
+  color: #1a202c;
+}
+
+.actionBar {
+  background-color: white;
+  padding: 12px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actionBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.createButton:hover {
+  background-color: #2563eb;
+}
+
+.searchContainer {
+  position: relative;
+}
+
+.searchInput {
+  padding: 8px 16px 8px 40px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 280px;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+  width: 20px;
+  height: 20px;
+}
+
+.actionBarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #cbd5e0;
+  background-color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterButton:hover {
+  background-color: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.gridButton {
+  padding: 8px;
+  border: 1px solid #cbd5e0;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.gridButton:hover {
+  background-color: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.tableContainer {
+  flex: 1;
+  overflow: auto;
+  background-color: white;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: #f7fafc;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tableHeaderCell {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4a5568;
+}
+
+.tableRow {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.15s;
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background-color: #f7fafc;
+}
+
+.tableRow.draggable {
+  cursor: grab;
+}
+
+.tableRow.draggable:active {
+  cursor: grabbing;
+}
+
+.tableRow.dragging {
+  opacity: 0.5;
+  background-color: #e2e8f0;
+}
+
+.tableRow.dragOver {
+  background-color: #dbeafe !important;
+  border: 2px solid #3b82f6 !important;
+  border-top: 2px solid #3b82f6 !important;
+  border-bottom: 2px solid #3b82f6 !important;
+  border-left: 4px solid #3b82f6 !important;
+  border-right: 2px solid #3b82f6 !important;
+  position: relative;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.tableRow.dragOver::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.tableRow.dragOver .tableCell {
+  background-color: transparent;
+}
+
+.tableCell {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.tableCellName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.itemIcon {
+  width: 20px;
+  height: 20px;
+  color: #4a5568;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemName {
+  font-weight: 500;
+  color: #1a202c;
+  font-size: 14px;
+}
+
+.badge {
+  padding: 2px 8px;
+  background-color: #edf2f7;
+  color: #4a5568;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.assessmentBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #38a169;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.assessmentDot {
+  width: 6px;
+  height: 6px;
+  background-color: #38a169;
+  border-radius: 50%;
+}
+
+.actionsCell {
+  text-align: right;
+  position: relative;
+}
+
+.actionsButton {
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4a5568;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionsButton:hover {
+  background-color: #edf2f7;
+}
+
+.pagination {
+  background-color: white;
+  padding: 12px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.paginationInfo {
+  font-size: 14px;
+  color: #718096;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paginationButton {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e0;
+  background-color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover {
+  background-color: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.paginationButtonActive {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.paginationButtonActive:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.emptyState {
+  padding: 80px 24px;
+  text-align: center;
+  color: #718096;
+}
+
