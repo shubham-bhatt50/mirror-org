@@ -84,7 +84,7 @@ export default function ShareModal({ isOpen, onClose, item }: ShareModalProps) {
   const handleShareViaEmail = () => {
     const subject = encodeURIComponent(`Shared: ${item.name}`);
     const body = encodeURIComponent(
-      `You've been shared access to "${item.name}" from Fox Rehabilitation.\n\n` +
+      `You've been shared access to "${item.name}" from Acme corp.\n\n` +
       `Access it here: ${shareLink}\n\n` +
       `This includes:\n` +
       `- ${folderCount} folder(s)\n` +

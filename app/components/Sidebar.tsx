@@ -55,7 +55,7 @@ export default function Sidebar() {
             className={styles.orgButton}
           >
             <IconUsers size={24} />
-            <span style={{ flex: 1, textAlign: 'left' }}>Fox Rehabilitation</span>
+            <span style={{ flex: 1, textAlign: 'left' }}>Acme corp.</span>
             <IconChevronDown
               size={20}
               style={{ transform: orgOpen ? 'none' : 'rotate(-90deg)', transition: 'transform 0.2s' }}

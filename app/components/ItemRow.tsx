@@ -8,6 +8,7 @@ import {
   IconEdit,
   IconSettings,
   IconCheck,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
 import { Item } from '../types';
 import { useItems } from '../context/ItemsContext';
@@ -51,7 +52,7 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
       case 'workflow':
         return <IconLayoutGrid size={20} className="text-gray-600" />;
       case 'simulation':
-        return <IconFolder size={20} className="text-gray-600" />;
+        return <IconPlayerPlay size={20} className="text-gray-600" />;
     }
   };
 
