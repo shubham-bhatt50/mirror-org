@@ -6,7 +6,7 @@ import WorkflowsTable from './components/WorkflowsTable';
 import ContentDetail from './components/ContentDetail';
 import HelpButton from './components/HelpButton';
 import { ItemsProvider, useItems } from './context/ItemsContext';
-import { IconPlus, IconSearch, IconFilter, IconLayoutGrid, IconChevronRight } from '@tabler/icons-react';
+import { IconPlus, IconSearch, IconFilter, IconLayoutGrid, IconChevronRight, IconFolder, IconPlayerPlay } from '@tabler/icons-react';
 import { Stage, ItemType } from './types';
 import styles from './components/Dashboard.module.css';
 
@@ -159,11 +159,15 @@ function ContentArea() {
                         color: '#4a5568',
                         background: 'none',
                         border: 'none',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
                       }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
+                      <IconFolder size={18} className="text-gray-600" />
                       Create folder
                     </button>
                     <button
@@ -180,11 +184,15 @@ function ContentArea() {
                         color: '#4a5568',
                         background: 'none',
                         border: 'none',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
                       }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
+                      <IconLayoutGrid size={18} className="text-gray-600" />
                       Create workflow
                     </button>
                     <button
@@ -201,11 +209,15 @@ function ContentArea() {
                         color: '#4a5568',
                         background: 'none',
                         border: 'none',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
                       }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
+                      <IconPlayerPlay size={18} className="text-gray-600" />
                       Create simulation
                     </button>
                   </div>
