@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { IconX } from '@tabler/icons-react';
-import { ItemType, Stage, Item } from '../types';
+import { ItemType, Stage, Item, Workflow, Simulation, Folder } from '../types';
 import { useItems } from '../context/ItemsContext';
 
 interface CreateItemModalProps {
@@ -64,7 +64,7 @@ export default function CreateItemModal({
       }
     }
 
-    const newItem: Item = {
+    const baseItem = {
       id: Date.now().toString(),
       name: name.trim(),
       type: itemType,
@@ -77,17 +77,31 @@ export default function CreateItemModal({
       }),
       lastUpdatedBy: 'Shubham Bhatt',
       parentId: currentFolder,
-      ...(itemType === 'workflow' && { screenCount: 0 }),
-      ...(itemType === 'simulation' && {
+    };
+
+    let newItem: Item;
+    if (itemType === 'workflow') {
+      newItem = {
+        ...baseItem,
+        type: 'workflow',
+        screenCount: 0,
+      } as Workflow;
+    } else if (itemType === 'simulation') {
+      newItem = {
+        ...baseItem,
+        type: 'simulation',
         workflowCount: 0,
         hasAssessment: false,
         playgroundMode: false,
-      }),
-      ...(itemType === 'folder' && { 
+      } as Simulation;
+    } else {
+      newItem = {
+        ...baseItem,
+        type: 'folder',
         children: [],
         playgroundMode: playgroundMode, // null = inherit, true/false = explicit
-      }),
-    };
+      } as Folder;
+    }
 
     addItem(newItem);
     setName('');

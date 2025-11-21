@@ -32,7 +32,7 @@ export function ItemsProvider({ children }: { children: ReactNode }) {
 
   const updateItem = (id: string, updates: Partial<Item>) => {
     setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+      prev.map((item) => (item.id === id ? { ...item, ...updates } as Item : item))
     );
   };
 
