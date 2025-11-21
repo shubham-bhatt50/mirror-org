@@ -20,8 +20,9 @@ export default function CreateItemModal({
 }: CreateItemModalProps) {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [playgroundMode, setPlaygroundMode] = useState<boolean | null>(null); // null = inherit
-  const { addItem, currentFolder, getFolderDepth, getEffectivePlaygroundMode } = useItems();
+  const [playgroundMode, setPlaygroundMode] = useState<boolean>(false);
+  const [selectedWorkflows, setSelectedWorkflows] = useState<string[]>([]);
+  const { addItem, currentFolder, getFolderDepth, items } = useItems();
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Close modal when clicking outside
@@ -41,12 +42,16 @@ export default function CreateItemModal({
     };
   }, [isOpen, onClose]);
 
+  // Get available workflows for simulation selection
+  const availableWorkflows = items.filter((item): item is Workflow => item.type === 'workflow');
+
   // Clear error when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setError('');
       setName('');
-      setPlaygroundMode(null); // Reset to inherit
+      setPlaygroundMode(false);
+      setSelectedWorkflows([]);
     }
   }, [isOpen]);
 
@@ -54,6 +59,14 @@ export default function CreateItemModal({
 
   const handleCreate = () => {
     if (!name.trim()) return;
+
+    // Validation for simulations
+    if (itemType === 'simulation') {
+      if (selectedWorkflows.length === 0) {
+        setError('Please select at least one workflow');
+        return;
+      }
+    }
 
     // Check nesting limit for folders (max 3 levels: 0, 1, 2, 3)
     if (itemType === 'folder') {
@@ -68,7 +81,7 @@ export default function CreateItemModal({
       id: Date.now().toString(),
       name: name.trim(),
       type: itemType,
-      stage,
+      stage: itemType === 'simulation' ? 'draft' : stage, // Simulations always go to draft
       createdBy: 'Shubham Bhatt',
       lastUpdated: new Date().toLocaleDateString('en-US', {
         month: 'short',
@@ -76,7 +89,7 @@ export default function CreateItemModal({
         year: 'numeric',
       }),
       lastUpdatedBy: 'Shubham Bhatt',
-      parentId: currentFolder,
+      parentId: itemType === 'simulation' ? null : currentFolder, // Simulations are top-level
     };
 
     let newItem: Item;
@@ -90,22 +103,23 @@ export default function CreateItemModal({
       newItem = {
         ...baseItem,
         type: 'simulation',
-        workflowCount: 0,
+        workflowCount: selectedWorkflows.length,
         hasAssessment: false,
-        playgroundMode: false,
+        playgroundMode: playgroundMode,
+        selectedWorkflows: selectedWorkflows,
       } as Simulation;
     } else {
       newItem = {
         ...baseItem,
         type: 'folder',
         children: [],
-        playgroundMode: playgroundMode, // null = inherit, true/false = explicit
       } as Folder;
     }
 
     addItem(newItem);
     setName('');
     setError('');
+    setSelectedWorkflows([]);
     onClose();
   };
 
@@ -114,10 +128,18 @@ export default function CreateItemModal({
       case 'workflow':
         return 'Create workflow';
       case 'simulation':
-        return 'Create folder';
+        return 'Create simulation';
       case 'folder':
         return 'Create folder';
     }
+  };
+
+  const toggleWorkflowSelection = (workflowId: string) => {
+    setSelectedWorkflows(prev => 
+      prev.includes(workflowId)
+        ? prev.filter(id => id !== workflowId)
+        : [...prev, workflowId]
+    );
   };
 
   return (
@@ -179,27 +201,71 @@ export default function CreateItemModal({
           )}
         </div>
 
-        {/* Playground mode toggle for folders */}
-        {itemType === 'folder' && (
+        {/* Workflow selection for simulations */}
+        {itemType === 'simulation' && (
+          <div style={{ marginBottom: '24px' }}>
+            <label className="block text-sm font-medium text-gray-700" style={{ marginBottom: '8px' }}>
+              Select workflows
+            </label>
+            {availableWorkflows.length === 0 ? (
+              <p className="text-sm text-gray-500">No workflows available. Please create a workflow first.</p>
+            ) : (
+              <div style={{ 
+                maxHeight: '200px', 
+                overflowY: 'auto', 
+                border: '1px solid #e2e8f0', 
+                borderRadius: '6px',
+                padding: '8px'
+              }}>
+                {availableWorkflows.map((workflow) => (
+                  <label
+                    key={workflow.id}
+                    className="flex items-center gap-3 cursor-pointer"
+                    style={{
+                      padding: '8px',
+                      borderRadius: '4px',
+                      marginBottom: '4px',
+                      backgroundColor: selectedWorkflows.includes(workflow.id) ? '#eff6ff' : 'transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!selectedWorkflows.includes(workflow.id)) {
+                        e.currentTarget.style.backgroundColor = '#f7fafc';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!selectedWorkflows.includes(workflow.id)) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedWorkflows.includes(workflow.id)}
+                      onChange={() => toggleWorkflowSelection(workflow.id)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-700">{workflow.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Playground mode toggle for simulations */}
+        {itemType === 'simulation' && (
           <div style={{ marginBottom: '24px' }}>
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                checked={playgroundMode === true}
-                onChange={(e) => {
-                  // Toggle between null (inherit) and true (enable)
-                  // If user unchecks, set to null to inherit
-                  setPlaygroundMode(e.target.checked ? true : null);
-                }}
+                checked={playgroundMode}
+                onChange={(e) => setPlaygroundMode(e.target.checked)}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <div>
                 <span className="text-sm font-medium text-gray-700">Enable playground mode</span>
                 <p className="text-xs text-gray-500 mt-1">
-                  {playgroundMode === true 
-                    ? 'Links workflows with common screens in this folder and subfolders'
-                    : `Inherit from parent (${getEffectivePlaygroundMode(currentFolder) ? 'enabled' : 'disabled'})`
-                  }
+                  Links workflows with common screens in this simulation
                 </p>
               </div>
             </label>
@@ -216,7 +282,7 @@ export default function CreateItemModal({
           </button>
           <button
             onClick={handleCreate}
-            disabled={!name.trim()}
+            disabled={!name.trim() || (itemType === 'simulation' && selectedWorkflows.length === 0)}
             className="bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
             style={{ padding: '10px 20px', fontSize: '14px', fontWeight: '500' }}
           >

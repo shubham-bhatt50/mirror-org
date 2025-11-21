@@ -24,12 +24,12 @@ export interface Simulation extends BaseItem {
   workflowCount: number;
   hasAssessment: boolean;
   playgroundMode: boolean;
+  selectedWorkflows: string[]; // Array of workflow IDs
 }
 
 export interface Folder extends BaseItem {
   type: 'folder';
   children: Item[];
-  playgroundMode?: boolean | null; // null = inherit from parent, true/false = explicit value
   hasAssessment?: boolean | null; // null = inherit from parent, true/false = explicit value
 }
 

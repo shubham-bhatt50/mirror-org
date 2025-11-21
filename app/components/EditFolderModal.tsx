@@ -17,15 +17,13 @@ export default function EditFolderModal({
   folder,
 }: EditFolderModalProps) {
   const [name, setName] = useState(folder.name);
-  const [playgroundMode, setPlaygroundMode] = useState<boolean | null>(folder.playgroundMode ?? null);
-  const { updateItem, getEffectivePlaygroundMode } = useItems();
+  const { updateItem } = useItems();
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Update state when folder changes
   useEffect(() => {
     if (isOpen && folder) {
       setName(folder.name);
-      setPlaygroundMode(folder.playgroundMode ?? null);
     }
   }, [isOpen, folder]);
 
@@ -53,7 +51,6 @@ export default function EditFolderModal({
 
     updateItem(folder.id, {
       name: name.trim(),
-      playgroundMode: playgroundMode,
       lastUpdated: new Date().toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -64,8 +61,6 @@ export default function EditFolderModal({
 
     onClose();
   };
-
-  const inheritedMode = getEffectivePlaygroundMode(folder.parentId);
 
   return (
     <div 
@@ -119,61 +114,6 @@ export default function EditFolderModal({
           />
         </div>
 
-        <div style={{ marginBottom: '24px' }}>
-          <label className="block text-sm font-medium text-gray-700" style={{ marginBottom: '12px' }}>
-            Playground mode
-          </label>
-          <div className="space-y-3">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="playgroundMode"
-                value="inherit"
-                checked={playgroundMode === null}
-                onChange={() => setPlaygroundMode(null)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-              />
-              <div>
-                <span className="text-sm font-medium text-gray-700">Inherit from parent</span>
-                <p className="text-xs text-gray-500 mt-1">
-                  {inheritedMode ? 'Currently enabled' : 'Currently disabled'}
-                </p>
-              </div>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="playgroundMode"
-                value="enable"
-                checked={playgroundMode === true}
-                onChange={() => setPlaygroundMode(true)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-              />
-              <div>
-                <span className="text-sm font-medium text-gray-700">Enable</span>
-                <p className="text-xs text-gray-500 mt-1">
-                  Links workflows with common screens in this folder and subfolders
-                </p>
-              </div>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="playgroundMode"
-                value="disable"
-                checked={playgroundMode === false}
-                onChange={() => setPlaygroundMode(false)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-              />
-              <div>
-                <span className="text-sm font-medium text-gray-700">Disable</span>
-                <p className="text-xs text-gray-500 mt-1">
-                  Disables playground mode for this folder and subfolders (unless they override)
-                </p>
-              </div>
-            </label>
-          </div>
-        </div>
 
         <div className="flex justify-end" style={{ gap: '12px' }}>
           <button

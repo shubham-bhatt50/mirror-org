@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item, Stage, ItemType } from '../types';
 import { mockData } from '../utils/mockData';
 
@@ -15,15 +15,64 @@ interface ItemsContextType {
   setSelectedContent: (item: Item | null) => void;
   breadcrumbs: { id: string | null; name: string }[];
   getFolderDepth: (folderId: string | null) => number;
-  getEffectivePlaygroundMode: (itemId: string | null) => boolean;
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
 
+const STORAGE_KEY = 'mirror-org-items';
+
+// Save items to localStorage
+const saveItemsToStorage = (items: Item[]) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  } catch (error) {
+    console.error('Error saving items to localStorage:', error);
+  }
+};
+
 export function ItemsProvider({ children }: { children: ReactNode }) {
+  // Always start with mockData to ensure server/client consistency
   const [items, setItems] = useState<Item[]>(mockData);
   const [currentFolder, setCurrentFolder] = useState<string | null>(null);
   const [selectedContent, setSelectedContent] = useState<Item | null>(null);
+
+  // Load from localStorage only on client after mount (to avoid hydration mismatch)
+  // Merge localStorage data with mockData to preserve new items from mockData
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as Item[];
+        // Create a map of existing items by ID
+        const existingItemsMap = new Map<string, Item>(parsed.map((item) => [item.id, item]));
+        // Add any items from mockData that don't exist in localStorage
+        mockData.forEach((mockItem) => {
+          if (!existingItemsMap.has(mockItem.id)) {
+            existingItemsMap.set(mockItem.id, mockItem);
+          }
+        });
+        // Convert back to array
+        const mergedItems: Item[] = Array.from(existingItemsMap.values());
+        setItems(mergedItems);
+      } else {
+        // If no localStorage data, initialize with mockData
+        setItems(mockData);
+      }
+    } catch (error) {
+      console.error('Error loading items from localStorage:', error);
+      // On error, use mockData
+      setItems(mockData);
+    }
+  }, []); // Only run once on mount
+
+  // Save items to localStorage whenever they change
+  useEffect(() => {
+    saveItemsToStorage(items);
+  }, [items]);
 
   const addItem = (item: Item) => {
     // Add new items at the beginning of the array so they appear at the top
@@ -79,43 +128,6 @@ export function ItemsProvider({ children }: { children: ReactNode }) {
     return findDepth(folderId, items);
   };
 
-  // Get effective playground mode by walking up the folder tree
-  // Returns the first explicit value found, or false if none found
-  // itemId can be a folder ID or any item ID (will check its parent folder)
-  const getEffectivePlaygroundMode = (itemId: string | null): boolean => {
-    if (itemId === null) return false; // Root level, no playground mode
-    
-    const item = items.find((i) => i.id === itemId);
-    if (!item) return false;
-    
-    // If the item itself is a folder, check it first
-    if (item.type === 'folder') {
-      const folder = item as import('../types').Folder;
-      if (folder.playgroundMode !== null && folder.playgroundMode !== undefined) {
-        return folder.playgroundMode;
-      }
-    }
-    
-    // Walk up the parent chain
-    const findPlaygroundMode = (id: string | null, allItems: Item[]): boolean => {
-      if (id === null) return false; // Reached root, default to false
-      
-      const folderItem = allItems.find((i) => i.id === id);
-      if (!folderItem || folderItem.type !== 'folder') return false;
-      
-      const folder = folderItem as import('../types').Folder;
-      
-      // If this folder has an explicit playgroundMode value, return it
-      if (folder.playgroundMode !== null && folder.playgroundMode !== undefined) {
-        return folder.playgroundMode;
-      }
-      
-      // Otherwise, check parent
-      return findPlaygroundMode(folderItem.parentId, allItems);
-    };
-    
-    return findPlaygroundMode(item.parentId, items);
-  };
 
   // Calculate breadcrumbs based on current folder
   const breadcrumbs = (() => {
@@ -164,7 +176,6 @@ export function ItemsProvider({ children }: { children: ReactNode }) {
         setSelectedContent,
         breadcrumbs,
         getFolderDepth,
-        getEffectivePlaygroundMode,
       }}
     >
       {children}

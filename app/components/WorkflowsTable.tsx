@@ -47,7 +47,11 @@ export default function WorkflowsTable({
         const matchesSearch = item.name
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-        return matchesStage && matchesParent && matchesSearch;
+        // In production mode, only show workflows and simulations (no folders)
+        const matchesType = stage === 'production' 
+          ? (item.type === 'workflow' || item.type === 'simulation')
+          : true;
+        return matchesStage && matchesParent && matchesSearch && matchesType;
       })
       .sort((a, b) => {
         // Sort by ID descending (newest items first, since IDs are timestamps)

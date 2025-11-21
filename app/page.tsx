@@ -185,7 +185,28 @@ function ContentArea() {
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      Create content
+                      Create workflow
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCreateItemType('simulation');
+                        setIsCreateModalOpen(true);
+                        setShowCreateMenu(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        color: '#4a5568',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      Create simulation
                     </button>
                   </div>
                 )}

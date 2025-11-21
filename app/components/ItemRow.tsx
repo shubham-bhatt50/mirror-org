@@ -14,6 +14,7 @@ import { useItems } from '../context/ItemsContext';
 import { useState, useRef, useEffect } from 'react';
 import styles from './Dashboard.module.css';
 import ConfigureFolderModal from './ConfigureFolderModal';
+import ConfigureSimulationModal from './ConfigureSimulationModal';
 import RenameModal from './RenameModal';
 import Tooltip from './Tooltip';
 
@@ -26,7 +27,7 @@ interface ItemRowProps {
 }
 
 export default function ItemRow({ item, isSelected = false, onSelect, stage = 'draft', allItems = [] }: ItemRowProps) {
-  const { setCurrentFolder, deleteItem, setSelectedContent, updateItem, getFolderDepth, getEffectivePlaygroundMode } = useItems();
+  const { setCurrentFolder, deleteItem, setSelectedContent, updateItem, getFolderDepth } = useItems();
   const [isDragging, setIsDragging] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
@@ -61,7 +62,7 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
       case 'workflow':
         return 'Workflow';
       case 'simulation':
-        return 'Folder';
+        return 'Simulation';
     }
   };
 
@@ -311,6 +312,34 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
           {item.type === 'simulation' && 'workflowCount' in item && (
             <span className={styles.badge}>{item.workflowCount}</span>
           )}
+          {item.type === 'simulation' && 'playgroundMode' in item && item.playgroundMode && (
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px',
+              fontSize: '11px',
+              padding: '2px 6px 2px 3px',
+              borderRadius: '12px',
+              backgroundColor: '#fef3c7',
+              color: '#d97706',
+              fontWeight: '500',
+              marginLeft: '4px'
+            }}>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '14px',
+                height: '14px',
+                borderRadius: '50%',
+                backgroundColor: '#d97706',
+                color: 'white',
+              }}>
+                <IconCheck size={8} />
+              </span>
+              Playground
+            </span>
+          )}
           {item.type === 'simulation' && 'hasAssessment' in item && item.hasAssessment && (
             <span style={{
               display: 'inline-flex',
@@ -344,45 +373,6 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
               {folderItemCount > 0 && (
                 <span className={styles.badge}>{folderItemCount}</span>
               )}
-              {(() => {
-                const folder = item as import('../types').Folder;
-                const effectiveMode = getEffectivePlaygroundMode(item.id);
-                const isExplicit = folder.playgroundMode !== null && folder.playgroundMode !== undefined;
-                if (effectiveMode || isExplicit) {
-                  return (
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '3px',
-                      fontSize: '11px',
-                      padding: '2px 6px 2px 3px',
-                      borderRadius: '12px',
-                      backgroundColor: effectiveMode ? '#fef3c7' : '#f3f4f6',
-                      color: effectiveMode ? '#d97706' : '#6b7280',
-                      fontWeight: '500',
-                      marginLeft: '4px'
-                    }}>
-                      {effectiveMode && (
-                        <span style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '14px',
-                          height: '14px',
-                          borderRadius: '50%',
-                          backgroundColor: '#d97706',
-                          color: 'white',
-                        }}>
-                          <IconCheck size={8} />
-                        </span>
-                      )}
-                      {effectiveMode ? 'Playground' : 'Playground off'}
-                      {!isExplicit && ' (inherited)'}
-                    </span>
-                  );
-                }
-                return null;
-              })()}
               {isDragOver && !dropError && (
                 <span style={{ 
                   marginLeft: 'auto', 
@@ -444,7 +434,7 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
               <IconEdit size={18} />
             </button>
           </Tooltip>
-          {item.type === 'folder' && (
+          {item.type === 'simulation' && (
             <Tooltip text="Configure">
               <button
                 onClick={(e) => {
@@ -499,11 +489,11 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
         onClose={() => setShowRenameModal(false)}
         item={item}
       />
-      {item.type === 'folder' && (
-        <ConfigureFolderModal
+      {item.type === 'simulation' && (
+        <ConfigureSimulationModal
           isOpen={showConfigureModal}
           onClose={() => setShowConfigureModal(false)}
-          folder={item as import('../types').Folder}
+          simulation={item as import('../types').Simulation}
         />
       )}
     </tr>

@@ -14,7 +14,6 @@ export const mockData: Item[] = [
     lastUpdatedBy: 'Dr. Sarah Johnson',
     parentId: null,
     children: [],
-    playgroundMode: true,
   },
   {
     id: '1002',
@@ -86,6 +85,34 @@ export const mockData: Item[] = [
     screenCount: 6,
     hasFlow: true,
   },
+  {
+    id: '20004',
+    name: 'Customer Service Training Simulation',
+    type: 'simulation',
+    stage: 'draft',
+    createdBy: 'Mike Chen',
+    lastUpdated: 'Dec 15, 2025',
+    lastUpdatedBy: 'Mike Chen',
+    parentId: null,
+    workflowCount: 3,
+    hasAssessment: false,
+    playgroundMode: true,
+    selectedWorkflows: ['20001', '20002', '20003'],
+  },
+  {
+    id: '20005',
+    name: 'Product Demo Simulation',
+    type: 'simulation',
+    stage: 'draft',
+    createdBy: 'Dr. Sarah Johnson',
+    lastUpdated: 'Dec 14, 2025',
+    lastUpdatedBy: 'Dr. Sarah Johnson',
+    parentId: null,
+    workflowCount: 2,
+    hasAssessment: true,
+    playgroundMode: false,
+    selectedWorkflows: ['20001', '20002'],
+  },
 
   // ============================================
   // LEVEL 2: Folders inside Level 1
@@ -102,7 +129,6 @@ export const mockData: Item[] = [
     lastUpdatedBy: 'Dr. Sarah Johnson',
     parentId: '1001',
     children: [],
-    playgroundMode: null, // Inherits from parent
   },
   {
     id: '2002',
@@ -114,7 +140,6 @@ export const mockData: Item[] = [
     lastUpdatedBy: 'Dr. Sarah Johnson',
     parentId: '1001',
     children: [],
-    playgroundMode: false, // Explicitly disabled
   },
   {
     id: '2003',
@@ -291,10 +316,11 @@ export const mockData: Item[] = [
     createdBy: 'Dr. Sarah Johnson',
     lastUpdated: 'Dec 8, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '2001',
+    parentId: null,
     workflowCount: 7,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['6001', '6002', '6003'],
   },
 
   // Inside Occupational Therapy (2002)
@@ -340,10 +366,11 @@ export const mockData: Item[] = [
     createdBy: 'Dr. Sarah Johnson',
     lastUpdated: 'Dec 4, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '2002',
+    parentId: null,
     workflowCount: 4,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['7001', '7002'],
   },
 
   // Inside Speech-Language Pathology (2003)
@@ -377,10 +404,11 @@ export const mockData: Item[] = [
     createdBy: 'Dr. Sarah Johnson',
     lastUpdated: 'Dec 1, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '2003',
+    parentId: null,
     workflowCount: 5,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['8001', '8002'],
   },
   {
     id: '8004',
@@ -421,14 +449,15 @@ export const mockData: Item[] = [
     id: '9003',
     name: 'Virtual Therapy Best Practices',
     type: 'simulation',
-    stage: 'draft',
+    stage: 'production',
     createdBy: 'Dr. Sarah Johnson',
     lastUpdated: 'Nov 27, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '2004',
+    parentId: null,
     workflowCount: 4,
     hasAssessment: false,
     playgroundMode: false,
+    selectedWorkflows: ['9001', '9002'],
   },
 
   // Inside Patient Onboarding (3001)
@@ -463,10 +492,11 @@ export const mockData: Item[] = [
     createdBy: 'Dr. Sarah Johnson',
     lastUpdated: 'Nov 24, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '3001',
+    parentId: null,
     workflowCount: 3,
     hasAssessment: false,
     playgroundMode: false,
+    selectedWorkflows: ['10001', '10002'],
   },
 
   // Inside Home Care Programs (3002)
@@ -560,10 +590,11 @@ export const mockData: Item[] = [
     createdBy: 'Mike Chen',
     lastUpdated: 'Nov 16, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '4001',
+    parentId: null,
     workflowCount: 6,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['13001'],
   },
   {
     id: '13003',
@@ -640,14 +671,15 @@ export const mockData: Item[] = [
     id: '15003',
     name: 'Advanced Therapy Techniques',
     type: 'simulation',
-    stage: 'draft',
+    stage: 'production',
     createdBy: 'Mike Chen',
     lastUpdated: 'Nov 9, 2025',
     lastUpdatedBy: 'Mike Chen',
-    parentId: '4003',
+    parentId: null,
     workflowCount: 4,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['15001', '15002'],
   },
 
   // Inside HIPAA Compliance (5001)
@@ -659,10 +691,11 @@ export const mockData: Item[] = [
     createdBy: 'Emily Rodriguez',
     lastUpdated: 'Nov 8, 2025',
     lastUpdatedBy: 'Emily Rodriguez',
-    parentId: '5001',
+    parentId: null,
     workflowCount: 5,
     hasAssessment: true,
     playgroundMode: false,
+    selectedWorkflows: ['16002', '16003'],
   },
   {
     id: '16002',
