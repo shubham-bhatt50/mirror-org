@@ -15,6 +15,7 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './Dashboard.module.css';
 import ConfigureFolderModal from './ConfigureFolderModal';
 import RenameModal from './RenameModal';
+import Tooltip from './Tooltip';
 
 interface ItemRowProps {
   item: Item;
@@ -419,34 +420,11 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
       </td>
       <td className={`${styles.tableCell} ${styles.actionsCell}`}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowRenameModal(true);
-            }}
-            style={{
-              padding: '6px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#4a5568',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '4px',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            title="Edit"
-          >
-            <IconEdit size={18} />
-          </button>
-          {item.type === 'folder' && (
+          <Tooltip text="Edit">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setShowConfigureModal(true);
+                setShowRenameModal(true);
               }}
               style={{
                 padding: '6px',
@@ -462,31 +440,57 @@ export default function ItemRow({ item, isSelected = false, onSelect, stage = 'd
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              title="Configure"
             >
-              <IconSettings size={18} />
+              <IconEdit size={18} />
             </button>
+          </Tooltip>
+          {item.type === 'folder' && (
+            <Tooltip text="Configure">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowConfigureModal(true);
+                }}
+                style={{
+                  padding: '6px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#4a5568',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '4px',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <IconSettings size={18} />
+              </button>
+            </Tooltip>
           )}
-          <button
-            onClick={handleDelete}
-            style={{
-              padding: '6px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#dc2626',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '4px',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            title="Archive"
-          >
-            <IconTrash size={18} />
-          </button>
+          <Tooltip text="Archive">
+            <button
+              onClick={handleDelete}
+              style={{
+                padding: '6px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#dc2626',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '4px',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <IconTrash size={18} />
+            </button>
+          </Tooltip>
         </div>
       </td>
 

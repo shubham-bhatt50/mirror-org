@@ -112,7 +112,7 @@ export default function CreateItemModal({
   const getTitle = () => {
     switch (itemType) {
       case 'workflow':
-        return 'Create content';
+        return 'Create workflow';
       case 'simulation':
         return 'Create folder';
       case 'folder':
